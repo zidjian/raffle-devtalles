@@ -19,13 +19,15 @@ Descripcion
 ## Instalación
 
 1. Clonar el repositorio
-2. Ejecutar
+2. Copiar el archivo _`.env.examples`_ y renombrarlo a _`.env`_
+3. Cambiar las variables de entorno por las deseadas
+4. Ejecutar
 
    ```
    docker-compose up
    ```
 
-3. Ingresar a `http://localhost:3001`
+5. Ingresar a `http://localhost:3001`
 
 ## Funcionalidades del proyecto
 
