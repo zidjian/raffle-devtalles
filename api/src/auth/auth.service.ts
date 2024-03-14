@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { AxiosAdapter } from 'src/common/adapters/axios.adapter';
-import { AccessToken } from './dto/access-token.dto';
+import { AccessToken } from './interfaces/access-token.interface';
 
 @Injectable()
 export class AuthService {
