@@ -19,15 +19,34 @@ Descripcion
 ## Instalación
 
 1. Clonar el repositorio
-2. Copiar el archivo _`.env.examples`_ y renombrarlo a _`.env`_
-3. Cambiar las variables de entorno por las deseadas
-4. Ejecutar
+
+##### Backend
+
+1. Dirigirse a la carpeta `api`
+
+   ```
+   cd api
+   ```
+
+2. Instalar dependencias.
+
+   ```
+   npm install
+   ```
+
+3. Copiar el archivo _`.env.examples`_ y renombrarlo a _`.env`_
+4. Cambiar las variables de entorno
+5. Levantar la base de datos
 
    ```
    docker-compose up
    ```
 
-5. Ingresar a `http://localhost:3001`
+6. Ejecutar la aplicacion
+
+   ```
+   npm run start:dev
+   ```
 
 ## Funcionalidades del proyecto
 
