@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { RaffleService } from './raffle.service';
 import { CreateRaffleDto } from './dto/create-raffle.dto';
 import { UpdateRaffleDto } from './dto/update-raffle.dto';
@@ -18,17 +27,20 @@ export class RaffleController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.raffleService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.raffleService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRaffleDto: UpdateRaffleDto) {
-    return this.raffleService.update(+id, updateRaffleDto);
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateRaffleDto: UpdateRaffleDto,
+  ) {
+    return this.raffleService.update(id, updateRaffleDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.raffleService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.raffleService.remove(id);
   }
 }

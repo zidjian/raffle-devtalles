@@ -7,7 +7,7 @@ import {
   JoinTable,
   ManyToMany,
   OneToMany,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 export enum RaffleStatus {
@@ -17,7 +17,7 @@ export enum RaffleStatus {
 
 @Entity('raffle')
 export class Raffle {
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('text')
@@ -26,8 +26,10 @@ export class Raffle {
   @Column('text')
   description?: string;
 
-  @Column('text')
-  photo: string;
+  @Column('text', {
+    nullable: true,
+  })
+  photo?: string;
 
   @Column('enum', {
     enum: RaffleStatus,
@@ -46,5 +48,5 @@ export class Raffle {
   users: User[];
 
   @OneToMany(() => Prize, (prize) => prize.raffle)
-  prize: Prize[];
+  prizes: Prize[];
 }
