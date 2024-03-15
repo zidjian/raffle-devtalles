@@ -5,6 +5,8 @@ import { CommonModule } from './common/common.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RaffleModule } from './raffle/raffle.module';
+import { PrizeModule } from './prize/prize.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    RaffleModule,
+    PrizeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
