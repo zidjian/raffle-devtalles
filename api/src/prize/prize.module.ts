@@ -8,6 +8,6 @@ import { Prize } from './entities/prize.entity';
   controllers: [PrizeController],
   providers: [PrizeService],
   imports: [TypeOrmModule.forFeature([Prize])],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, PrizeModule, PrizeService],
 })
 export class PrizeModule {}

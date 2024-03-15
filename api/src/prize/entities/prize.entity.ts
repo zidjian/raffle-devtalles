@@ -1,18 +1,26 @@
 import { Raffle } from 'src/raffle/entities/raffle.entity';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('prize')
 export class Prize {
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('text')
   title: string;
 
-  @Column('text')
+  @Column('text', {
+    nullable: true,
+  })
   photo?: string;
 
-  @OneToOne(() => Raffle, (raffle) => raffle.prize)
+  @ManyToOne(() => Raffle, (raffle) => raffle.prizes, { onDelete: 'CASCADE' })
   @JoinColumn()
   raffle: Raffle;
 }
