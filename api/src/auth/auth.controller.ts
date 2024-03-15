@@ -5,9 +5,6 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get()
-  findAll() {}
-
   @Get('/discord/redirect')
   getUserDiscord(@Query('code') discordCode: string) {
     return this.authService.accessToken(discordCode);
