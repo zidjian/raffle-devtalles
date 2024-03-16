@@ -10,6 +10,7 @@ interface Navigation {
 const navigation: Navigation[] = [
     { text: "Inicio", path: "/" },
     { text: "Sorteos", path: "/sorteos" },
+    { text: "Ganadores", path: "/ganadores" },
 ];
 
 export function Header() {
@@ -38,7 +39,7 @@ export function Header() {
                     ))}
                 </nav>
                 <Link
-                    className="py-2 px-8 rounded-lg bg-[#261a4b] font-bold hidden md:flex"
+                    className="py-2 px-8 rounded-lg bg-[#261a4b] hover:bg-[#20163d] font-bold hidden md:flex"
                     href={"/iniciar-sesion"}
                 >
                     Iniciar sesión

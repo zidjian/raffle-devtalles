@@ -101,7 +101,9 @@ export function RegisterForm() {
                     aquí
                 </Link>
             </p>
-            <Button text="Registrarse" type="submit" />
+            <div className="w-full text-center">
+                <Button text="Registrarse" type="submit" />
+            </div>
         </form>
     );
 }

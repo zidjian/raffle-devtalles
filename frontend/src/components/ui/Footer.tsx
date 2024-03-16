@@ -65,7 +65,7 @@ export function Footer() {
                     <div className=""></div>
                 </div>
                 <div className="p-4 bg-[#1D1238] rounded-2xl text-center">
-                    &copy; 2024 DevTalles. Desarrollado por Waldir Maidana y
+                    &copy; DevTalles 2024. Desarrollado por Waldir Maidana y
                     Camilo Reyes.
                 </div>
             </div>

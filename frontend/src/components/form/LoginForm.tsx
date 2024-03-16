@@ -47,7 +47,9 @@ export function LoginForm() {
                 value={formik.values.password}
                 change={formik.handleChange}
                 blur={formik.handleBlur}
-                error={formik.touched.password && Boolean(formik.errors.password)}
+                error={
+                    formik.touched.password && Boolean(formik.errors.password)
+                }
                 helpertext={formik.touched.password && formik.errors.password}
             />
             <p className="text-sm">
@@ -59,7 +61,9 @@ export function LoginForm() {
                     aquí
                 </Link>
             </p>
-            <Button text="Iniciar sesión" type="submit" />
+            <div className="w-full text-center">
+                <Button text="Iniciar sesión" type="submit" />
+            </div>
         </form>
     );
 }
