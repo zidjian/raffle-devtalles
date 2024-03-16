@@ -11,14 +11,20 @@ import {
 import { RaffleService } from './raffle.service';
 import { CreateRaffleDto } from './dto/create-raffle.dto';
 import { UpdateRaffleDto } from './dto/update-raffle.dto';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { ValidRoles } from 'src/auth/interfaces/valid-roles';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { User } from 'src/auth/entities/user.entity';
 
 @Controller('raffle')
 export class RaffleController {
   constructor(private readonly raffleService: RaffleService) {}
 
   @Post()
-  create(@Body() createRaffleDto: CreateRaffleDto) {
-    return this.raffleService.create(createRaffleDto);
+  @Auth(ValidRoles.admin)
+  create(@Body() createRaffleDto: CreateRaffleDto, @GetUser() user: User) {
+    console.log('user Controler', user);
+    return this.raffleService.create(createRaffleDto, user);
   }
 
   @Get()
@@ -32,11 +38,13 @@ export class RaffleController {
   }
 
   @Patch(':id')
+  @Auth(ValidRoles.admin)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateRaffleDto: UpdateRaffleDto,
+    @GetUser() user: User,
   ) {
-    return this.raffleService.update(id, updateRaffleDto);
+    return this.raffleService.update(id, updateRaffleDto, user);
   }
 
   @Delete(':id')

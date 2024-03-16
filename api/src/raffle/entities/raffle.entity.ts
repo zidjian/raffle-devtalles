@@ -6,6 +6,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -43,9 +44,11 @@ export class Raffle {
   @Column('date')
   deadLine: Date;
 
-  @ManyToMany(() => User, (user) => user.raffles)
-  @JoinTable()
-  users: User[];
+  @ManyToMany(() => User, (user) => user.raffles, { eager: true })
+  participants: User[];
+
+  @ManyToOne(() => User, (user) => user.createdRaffles, { eager: true })
+  creator: User;
 
   @OneToMany(() => Prize, (prize) => prize.raffle)
   prizes: Prize[];

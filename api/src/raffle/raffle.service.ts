@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Raffle } from './entities/raffle.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PrizeService } from '../prize/prize.service';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class RaffleService {
@@ -15,13 +16,16 @@ export class RaffleService {
     private readonly prizeService: PrizeService,
   ) {}
 
-  async create(createRaffleDto: CreateRaffleDto) {
+  async create(createRaffleDto: CreateRaffleDto, user: User) {
     try {
       const { prizes = [], ...raffleDetails } = createRaffleDto;
 
       const newRaffle = await this.raffleRepository.create({
         ...raffleDetails,
+        creator: user,
       });
+
+      console.log('user', user);
 
       const savedRaffle = await this.raffleRepository.save(newRaffle);
 
@@ -71,7 +75,7 @@ export class RaffleService {
     return raffle;
   }
 
-  async update(id: string, updateRaffleDto: UpdateRaffleDto) {
+  async update(id: string, updateRaffleDto: UpdateRaffleDto, user: User) {
     const { prizes, ...updatedRaffleData } = updateRaffleDto;
 
     const raffle = await this.findOne(id);
@@ -79,6 +83,7 @@ export class RaffleService {
     await this.raffleRepository.save({
       ...raffle,
       ...updatedRaffleData,
+      creator: user,
     });
 
     const processedPrizes = [];
@@ -110,5 +115,13 @@ export class RaffleService {
     const raffle = await this.findOne(id);
 
     await this.raffleRepository.remove(raffle);
+  }
+
+  async deleteAllProducts() {
+    const query = this.raffleRepository.createQueryBuilder('raffle');
+
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {}
   }
 }
