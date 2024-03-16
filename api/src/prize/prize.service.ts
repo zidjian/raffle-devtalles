@@ -14,8 +14,6 @@ export class PrizeService {
   ) {}
   async create(createPrizeDto: CreatePrizeDto, raffle: Raffle) {
     try {
-      console.log(createPrizeDto);
-
       const prize = await this.prizeRepository.create({
         ...createPrizeDto,
         raffle,
