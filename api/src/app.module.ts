@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RaffleModule } from './raffle/raffle.module';
 import { PrizeModule } from './prize/prize.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PrizeModule } from './prize/prize.module';
     }),
     RaffleModule,
     PrizeModule,
+    SeedModule,
   ],
   controllers: [AppController],
   providers: [AppService],

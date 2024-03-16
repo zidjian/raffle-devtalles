@@ -1,9 +1,12 @@
 import { Raffle } from 'src/raffle/entities/raffle.entity';
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -12,10 +15,14 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('text')
+  @Column('text', {
+    nullable: true,
+  })
   discordId: string;
 
-  @Column('text')
+  @Column('text', {
+    nullable: true,
+  })
   username: string;
 
   @Column('text', {
@@ -26,10 +33,10 @@ export class User {
   @Column('text', { select: false })
   password: string;
 
-  @Column('text', { select: false })
+  @Column('text', { select: false, nullable: true })
   access_token: string;
 
-  @Column('text', { select: false })
+  @Column('text', { select: false, nullable: true })
   refresh_token: string;
 
   @Column('text', {
@@ -38,7 +45,23 @@ export class User {
   })
   roles: string[];
 
-  @ManyToMany(() => Raffle, (raffle) => raffle.users)
+  @Column('bool', { default: true })
+  isActive: boolean;
+
+  @ManyToMany(() => Raffle, (raffle) => raffle.participants)
   @JoinTable()
   raffles: Raffle[];
+
+  @OneToMany(() => Raffle, (raffle) => raffle.creator)
+  createdRaffles: Raffle[];
+
+  @BeforeInsert()
+  checkFieldsBeforeInsert() {
+    this.email = this.email.toLowerCase().toString();
+  }
+
+  @BeforeUpdate()
+  checkFieldsBeforeUpdate() {
+    this.checkFieldsBeforeInsert();
+  }
 }
