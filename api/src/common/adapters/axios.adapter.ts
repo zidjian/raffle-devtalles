@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { HttpAdapter } from '../interfaces/http-adapter.interface';
 import { BadRequestException, Injectable } from '@nestjs/common';
 
@@ -12,10 +12,17 @@ export class AxiosAdapter implements HttpAdapter {
       return data;
     } catch (error) {
       const err = error;
+      const responseData = err.response?.data;
 
-      console.log(err.response?.data);
+      if (responseData && responseData.code === 10004) {
+        // El servidor es desconocido
+        return null; // Retornamos null para indicar que no se encontró el servidor
+      }
 
-      throw new BadRequestException(`${err.response.data.message}`);
+      // Otro tipo de error, lanza una BadRequestException con el mensaje del error
+      throw new BadRequestException(
+        responseData?.message || 'Error desconocido',
+      );
     }
   }
 

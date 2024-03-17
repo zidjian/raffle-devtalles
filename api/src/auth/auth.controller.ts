@@ -4,9 +4,10 @@ import {
   Get,
   Post,
   Query,
-  Req,
+
+  /*   Req,
   SetMetadata,
-  UseGuards,
+  UseGuards, */
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -28,8 +29,14 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('/discord/redirect')
-  getUserDiscord(@Query('code') discordCode: string) {
-    return this.authService.accessToken(discordCode);
+  loginWithDiscord(@Query('code') discordCode: string) {
+    return this.authService.loginWithDiscord(discordCode);
+  }
+
+  @Get('/user/me')
+  @Auth()
+  getCurrentUser(@GetUser() user: User) {
+    return user;
   }
 
   @Post('/register')

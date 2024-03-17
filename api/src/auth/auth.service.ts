@@ -16,6 +16,7 @@ import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
+import { IUserDiscord } from './interfaces/user-discord.interface';
 
 @Injectable()
 export class AuthService {
@@ -25,14 +26,13 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async accessToken(discordCode: string) {
+  async loginWithDiscord(discordCode: string) {
     const data = {
       client_id: process.env.DISCORD_CLIENT_ID,
       client_secret: process.env.DISCORD_CLIENT_SECRET,
       grant_type: 'authorization_code',
       code: discordCode,
       redirect_uri: 'http://localhost:3001/api/auth/discord/redirect',
-      // redirect_uri: 'https://www.google.com/',
     };
 
     const headers = {
@@ -43,22 +43,56 @@ export class AuthService {
 
     const response = await this.http.post<AccessToken>(url, data, { headers });
 
-    const userInfo = await this.http.get<any>(
+    const userInfo: IUserDiscord = await this.http.get<any>(
       'https://discord.com/api/v10/users/@me',
       { headers: { Authorization: `Bearer ${response.access_token}` } },
     );
 
-    const userGuilds = await this.http.get<any>(
+    const checkIfIsMemberOfGuild = await this.http.get<any>(
       'https://discord.com/api/v10/users/@me/guilds/1130900724499365958/member',
       { headers: { Authorization: `Bearer ${response.access_token}` } },
     );
 
-    /*    const isMember = await this.http.get<any>(
-      'https://discord.com/api/v10/users/@me/guilds/{guild.id}/member',
-      { headers: { Authorization: `Bearer ${response.access_token}` } },
-    ); */
+    const isGuildMember = checkIfIsMemberOfGuild ? true : false;
 
-    return { userInfo, userGuilds, response };
+    const { id, username, email } = userInfo;
+
+    const user = await this.userRepository.findOne({
+      where: { discordId: id },
+    });
+
+    if (!user) {
+      const newUser = await this.userRepository.create({
+        discordId: id,
+        username,
+        email,
+        isGuildMember,
+      });
+      await this.userRepository.save(newUser);
+    } else {
+      console.log('Estoy actualizando');
+
+      await this.userRepository.save({ ...user, username, isGuildMember });
+    }
+
+    const token = this.getJwtToken({
+      id: user.id,
+      discordId: user.discordId,
+      isGuildMember: user.isGuildMember,
+    });
+    return `
+      <script>
+        window.location.href = 'http://localhost:3000/success?token=${token}';
+      </script>
+    `;
+    return {
+      ...user,
+      token: this.getJwtToken({
+        id: user.id,
+        discordId: user.discordId,
+        isGuildMember: user.isGuildMember,
+      }),
+    };
   }
 
   async register(createUserDto: CreateUserDto) {
@@ -72,13 +106,27 @@ export class AuthService {
       await this.userRepository.save(user);
       delete user.password;
 
-      return { ...user, token: this.getJwtToken({ id: user.id }) };
+      return {
+        ...user,
+        token: this.getJwtToken({
+          id: user.id,
+          discordId: user.discordId,
+          isGuildMember: user.isGuildMember,
+        }),
+      };
     } catch (error) {
       this.handleDbErrors(error);
     }
   }
   async checkAuthStatus(user: User) {
-    return { ...user, token: this.getJwtToken({ id: user.id }) };
+    return {
+      ...user,
+      token: this.getJwtToken({
+        id: user.id,
+        discordId: user.discordId,
+        isGuildMember: user.isGuildMember,
+      }),
+    };
   }
   private getJwtToken(payload: JwtPayload) {
     const token = this.jwtService.sign(payload);
@@ -101,7 +149,14 @@ export class AuthService {
     if (!bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('Credentials are not valid (password)');
 
-    return { ...user, token: this.getJwtToken({ id: user.id }) };
+    return {
+      ...user,
+      token: this.getJwtToken({
+        id: user.id,
+        discordId: user.discordId,
+        isGuildMember: user.isGuildMember,
+      }),
+    };
   }
 
   private handleDbErrors(error: any): never {

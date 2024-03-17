@@ -30,20 +30,17 @@ export class User {
   })
   email: string;
 
-  @Column('text', { select: false })
+  @Column('text', { select: false, nullable: true })
   password: string;
-
-  @Column('text', { select: false, nullable: true })
-  access_token: string;
-
-  @Column('text', { select: false, nullable: true })
-  refresh_token: string;
 
   @Column('text', {
     array: true,
     default: ['user'],
   })
   roles: string[];
+
+  @Column('bool', { default: false })
+  isGuildMember: boolean;
 
   @Column('bool', { default: true })
   isActive: boolean;

@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  //Siempre se ejecuta siempre que el JWT halla pasado validaciones
+  //Siempre se ejecuta siempre que el JWT haya pasado validaciones
   async validate(payload: JwtPayload): Promise<User> {
     const { id } = payload;
 
