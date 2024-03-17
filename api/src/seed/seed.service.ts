@@ -21,12 +21,39 @@ export class SeedService {
 
     return 'seed executed!';
   }
+  async deleteAllRaffleParticipants() {
+    try {
+      // Obtén todos los usuarios con las rifas en las que participan cargadas
+      const allUsers = await this.userRepository.find({
+        relations: ['raffles'],
+      });
 
+      // Elimina todas las relaciones de rifas de participantes de cada usuario
+      await Promise.all(
+        allUsers.map(async (user) => {
+          user.raffles = []; // Vacía la lista de rifas en las que participa
+          await this.userRepository.save(user); // Guarda el usuario actualizado en la base de datos
+        }),
+      );
+
+      return 'Relaciones de participantes de las rifas eliminadas exitosamente para todos los usuarios.';
+    } catch (error) {
+      // Manejar errores
+      console.error(
+        'Error al eliminar las relaciones de participantes de las rifas para los usuarios:',
+        error,
+      );
+      throw new Error(
+        'No se pudieron eliminar las relaciones de participantes de las rifas para los usuarios.',
+      );
+    }
+  }
   private async delateTables() {
+    await this.raffleService.deleteAllRaffleParticipants();
     await this.raffleService.deleteAllProducts();
 
+    await this.deleteAllRaffleParticipants();
     const queryBuilder = this.userRepository.createQueryBuilder();
-
     await queryBuilder.delete().where({}).execute();
   }
 
