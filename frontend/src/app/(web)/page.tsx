@@ -65,7 +65,7 @@ export default function HomePage() {
             <div className="py-4 px-2 lg:px-0">
                 <div className="w-full mx-auto md:max-w-7xl grid grid-cols-1 md:grid-cols-2 p-8 md:p-12 lg:p-24 gap-8">
                     <div className="flex justify-center">
-                        <figure className="relative w-[428px] h-[428px]">
+                        <figure className="relative w-[300px] h-[300px]">
                             <Image
                                 fill
                                 src={
