@@ -33,6 +33,15 @@ export class User {
   @Column('text', { select: false, nullable: true })
   password: string;
 
+  @Column('text', { select: false, nullable: true })
+  access_token: string;
+
+  @Column('text', { select: false, nullable: true })
+  refresh_token: string;
+
+  @Column('text', { nullable: true })
+  avatar: string;
+
   @Column('text', {
     array: true,
     default: ['user'],
