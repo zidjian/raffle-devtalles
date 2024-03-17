@@ -4,12 +4,12 @@
 
 ### Índice
 
-- [Descripción del proyecto](#Descripción-del-proyecto)
-- [Instalación](#Instalacion)
-- [Funcionalidades del proyecto](#Funcionalidades-del-proyecto)
-- [Acceso al proyecto](#Acceso-al-proyecto)
-- [Tecnologías utilizadas](#Tecnologías-utilizadas)
-- [Autores](#Autores)
+-   [Descripción del proyecto](#Descripción-del-proyecto)
+-   [Instalación](#Instalacion)
+-   [Funcionalidades del proyecto](#Funcionalidades-del-proyecto)
+-   [Acceso al proyecto](#Acceso-al-proyecto)
+-   [Tecnologías utilizadas](#Tecnologías-utilizadas)
+-   [Autores](#Autores)
 
 ## Descripción del proyecto
 
@@ -24,34 +24,34 @@ Descripcion
 
 1. Dirigirse a la carpeta `api`
 
-   ```
-   cd api
-   ```
+    ```
+    cd api
+    ```
 
 2. Instalar dependencias.
 
-   ```
-   npm install
-   ```
+    ```
+    npm install
+    ```
 
 3. Copiar el archivo _`.env.examples`_ y renombrarlo a _`.env`_
 4. Cambiar las variables de entorno
 5. Levantar la base de datos
 
-   ```
-   docker-compose up
-   ```
+    ```
+    docker-compose up
+    ```
 
 6. Ejecutar la aplicacion
 
-   ```
-   npm run start:dev
-   ```
+    ```
+    npm run start:dev
+    ```
 
 ## Funcionalidades del proyecto
 
-- `Funcionalidad 1:`
-- `Funcionalidad 1:`
+-   `Funcionalidad 1:`
+-   `Funcionalidad 1:`
 
 ## Acceso al proyecto
 
@@ -59,8 +59,8 @@ Descripcion
 
 ## Tecnologías utilizadas
 
-- Nextjs 14
-- Nest
+-   Nextjs 14
+-   Nest
 
 ## Autores
 
