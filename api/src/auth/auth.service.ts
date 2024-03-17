@@ -57,7 +57,7 @@ export class AuthService {
 
     const { id, username, email } = userInfo;
 
-    const user = await this.userRepository.findOne({
+    let user = await this.userRepository.findOne({
       where: { discordId: id },
     });
 
@@ -68,7 +68,7 @@ export class AuthService {
         email,
         isGuildMember,
       });
-      await this.userRepository.save(newUser);
+      user = await this.userRepository.save(newUser);
     } else {
       console.log('Estoy actualizando');
 
