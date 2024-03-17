@@ -27,6 +27,35 @@ export class AuthService {
   ) {}
 
   async loginWithDiscord(discordCode: string) {
+    try {
+      const { access_token, refresh_token } =
+        await this.getAccessToken(discordCode);
+      const userInfo = await this.getUserInfo(access_token);
+      const isGuildMember = await this.checkGuildMembership(access_token);
+      const user = await this.findOrCreateUser(
+        userInfo,
+        access_token,
+        refresh_token,
+        isGuildMember,
+      );
+
+      const token = this.getJwtToken({
+        id: user.id,
+        discordId: user.discordId,
+        isGuildMember: user.isGuildMember,
+      });
+
+      return `
+      <script>
+        window.location.href = 'http://localhost:3000/success?token=${token}';
+      </script>
+    `;
+    } catch (error) {
+      throw new BadRequestException('Error al iniciar sesión con Discord');
+    }
+  }
+
+  private async getAccessToken(discordCode: string) {
     const data = {
       client_id: process.env.DISCORD_CLIENT_ID,
       client_secret: process.env.DISCORD_CLIENT_SECRET,
@@ -40,59 +69,136 @@ export class AuthService {
     };
 
     const url = 'https://discord.com/api/v10/oauth2/token';
-
-    const response = await this.http.post<AccessToken>(url, data, { headers });
-
-    const userInfo: IUserDiscord = await this.http.get<any>(
-      'https://discord.com/api/v10/users/@me',
-      { headers: { Authorization: `Bearer ${response.access_token}` } },
+    const { access_token, refresh_token } = await this.http.post<AccessToken>(
+      url,
+      data,
+      {
+        headers,
+      },
     );
+    return { access_token, refresh_token };
+  }
 
+  private async getUserInfo(accessToken: string) {
+    const userInfo = await this.http.get<IUserDiscord>(
+      'https://discord.com/api/v10/users/@me',
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      },
+    );
+    return userInfo;
+  }
+
+  private async checkGuildMembership(accessToken: string) {
     const checkIfIsMemberOfGuild = await this.http.get<any>(
       'https://discord.com/api/v10/users/@me/guilds/1130900724499365958/member',
-      { headers: { Authorization: `Bearer ${response.access_token}` } },
+      { headers: { Authorization: `Bearer ${accessToken}` } },
     );
+    return !!checkIfIsMemberOfGuild;
+  }
 
-    const isGuildMember = checkIfIsMemberOfGuild ? true : false;
+  private async getNewTokenDiscord(refreshToken) {
+    const data = {
+      client_id: process.env.DISCORD_CLIENT_ID,
+      client_secret: process.env.DISCORD_CLIENT_SECRET,
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+    };
 
-    const { id, username, email } = userInfo;
+    const headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
 
-    let user = await this.userRepository.findOne({
-      where: { discordId: id },
+    const url = 'https://discord.com/api/v10/oauth2/token';
+
+    const { access_token, refresh_token } = await this.http.post<AccessToken>(
+      url,
+      data,
+      {
+        headers,
+      },
+    );
+    return { access_token, refresh_token };
+  }
+
+  async checkDiscordGuild(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: {
+        refresh_token: true,
+        id: true,
+        discordId: true,
+        isGuildMember: true,
+      },
     });
 
+    if (!user.discordId) {
+      throw new BadRequestException(
+        'El usuario no tiene un Discord asociado, asocia una cuenta para continuar',
+      );
+    }
+    const { access_token, refresh_token } = await this.getNewTokenDiscord(
+      user.refresh_token,
+    );
+
+    // Obtener información del usuario desde Discord utilizando el token de acceso
+    const userInfo = await this.getUserInfo(access_token);
+
+    // Verificar si el usuario es miembro de la guild en Discord utilizando el token de acceso
+    const isGuildMember = await this.checkGuildMembership(access_token);
+
+    if (!isGuildMember) {
+      throw new BadRequestException(`No eres parte del servidor de DevTalles`);
+    }
+    // Actualizar la información del usuario en la base de datos, creándolo si no existe
+    const updatedUser = await this.findOrCreateUser(
+      userInfo,
+      access_token,
+      refresh_token,
+      isGuildMember,
+    );
+
+    // Generar el token JWT con la información actualizada del usuario
+    const token = this.getJwtToken({
+      id: updatedUser.id,
+      discordId: updatedUser.discordId,
+      isGuildMember: updatedUser.isGuildMember,
+    });
+
+    // Devolver el token JWT
+    return token;
+  }
+
+  private async findOrCreateUser(
+    userInfo: IUserDiscord,
+    accessToken: string,
+    refreshToken: string,
+    isGuildMember: boolean,
+  ) {
+    const { id, username, email, avatar } = userInfo;
+    let user = await this.userRepository.findOne({ where: { discordId: id } });
+
     if (!user) {
-      const newUser = await this.userRepository.create({
+      user = await this.userRepository.create({
         discordId: id,
         username,
         email,
+        avatar,
+        access_token: accessToken,
+        refresh_token: refreshToken,
         isGuildMember,
       });
-      user = await this.userRepository.save(newUser);
     } else {
-      console.log('Estoy actualizando');
+      user.username = username;
+      user.avatar = avatar;
+      user.access_token = accessToken;
+      user.refresh_token = refreshToken;
 
-      await this.userRepository.save({ ...user, username, isGuildMember });
+      user.isGuildMember = isGuildMember;
     }
 
-    const token = this.getJwtToken({
-      id: user.id,
-      discordId: user.discordId,
-      isGuildMember: user.isGuildMember,
-    });
-    return `
-      <script>
-        window.location.href = 'http://localhost:3000/success?token=${token}';
-      </script>
-    `;
-    return {
-      ...user,
-      token: this.getJwtToken({
-        id: user.id,
-        discordId: user.discordId,
-        isGuildMember: user.isGuildMember,
-      }),
-    };
+    await this.userRepository.save(user);
+    return user;
   }
 
   async register(createUserDto: CreateUserDto) {
@@ -139,7 +245,13 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true, id: true },
+      select: {
+        email: true,
+        password: true,
+        id: true,
+        discordId: true,
+        isGuildMember: true,
+      },
     });
 
     if (!user) {
@@ -148,6 +260,10 @@ export class AuthService {
 
     if (!bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('Credentials are not valid (password)');
+
+    delete user.password;
+
+    console.log(user);
 
     return {
       ...user,
