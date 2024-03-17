@@ -47,6 +47,16 @@ export class RaffleController {
     return this.raffleService.update(id, updateRaffleDto, user);
   }
 
+  @Post('/participate/:raffleId')
+  @Auth()
+  participateRaffle(
+    @GetUser('id') userId: string,
+    @Param('raffleId', ParseUUIDPipe) raffleId: string,
+  ) {
+    return this.raffleService.participateRaffle(userId, raffleId);
+  }
+
+  @Post('/')
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.raffleService.remove(id);
