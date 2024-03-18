@@ -41,6 +41,11 @@ export class RaffleController {
     return this.raffleService.findAll();
   }
 
+  @Get('/ended-raffles')
+  getAllEndedRaffles() {
+    return this.raffleService.getAllEndedRaffles();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.raffleService.findOne(id);

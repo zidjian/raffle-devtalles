@@ -112,6 +112,16 @@ export class RaffleService {
     }
   }
 
+  async getAllEndedRaffles() {
+    const rafflesEnded = await this.raffleRepository.find({
+      where: { status: RaffleStatus.FINALIZADO },
+      relations: ['winner'],
+      select: { id: true, title: true },
+    });
+
+    return rafflesEnded;
+  }
+
   async setWinner(raffleId: string, winnerRaffle: WinnerRaffleDto) {
     const raffle = await this.raffleRepository.findOne({
       where: { id: raffleId },
