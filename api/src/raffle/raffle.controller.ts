@@ -61,4 +61,9 @@ export class RaffleController {
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.raffleService.remove(id);
   }
+
+  @Get('/:raffleId/participants')
+  getRaffleParticipants(@Param('raffleId', ParseUUIDPipe) raffleId: string) {
+    return this.raffleService.getRaffleParticipants(raffleId);
+  }
 }

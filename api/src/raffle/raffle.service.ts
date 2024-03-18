@@ -106,6 +106,18 @@ export class RaffleService {
     }
   }
 
+  async getRaffleParticipants(raffleId: string) {
+    const raffle = await this.raffleRepository
+      .createQueryBuilder('raffle')
+      .leftJoinAndSelect('raffle.participants', 'participants')
+      .where('raffle.id = :raffleId', { raffleId })
+      .getMany();
+
+    const participants = raffle.map((raffle) => raffle.participants).flat();
+
+    return participants;
+  }
+
   async findOne(id: string) {
     const raffle = await this.raffleRepository
       .createQueryBuilder('raffle')
