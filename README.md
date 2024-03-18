@@ -7,7 +7,6 @@
 - [Descripción del proyecto](#Descripción-del-proyecto)
 - [Instalación](#Instalacion)
 - [Funcionalidades del proyecto](#Funcionalidades-del-proyecto)
-- [Acceso al proyecto](#Acceso-al-proyecto)
 - [Tecnologías utilizadas](#Tecnologías-utilizadas)
 - [Autores](#Autores)
 
@@ -22,7 +21,7 @@ Descripcion
 
 #### Backend
 
-1. Dirigirse a la carpeta `api`
+1. Dirigirse a la carpeta `./api`
 
    ```
    cd api
@@ -73,19 +72,35 @@ Descripcion
 
    > \*\*No es una autenticación utilizando los servicios del API de discord, solo es una prueba
 
+#### Front End
+
+1. Ingresar a la carpeta `./frontend`
+2. Copiar el archivo _`.env.examples`_ y renombrarlo a _`.env`_
+3. Cambiar las variables de entorno
+4. Instalar las dependencias.
+
+   ```
+   npm install
+   ```
+
+5. Ejecutar la aplicación.
+
+   ```
+   npm run dev
+   ```
+
+6. Ingresar a la aplicación:
+   `http://localhost:3000`
+
 ## Funcionalidades del proyecto
 
 - `Funcionalidad 1:`
 - `Funcionalidad 1:`
 
-## Acceso al proyecto
-
-[Demo](https://aluraflix-phi-five.vercel.app/)
-
 ## Tecnologías utilizadas
 
 - Nextjs 14
-- Nest
+- Nestjs
 
 ## Autores
 
