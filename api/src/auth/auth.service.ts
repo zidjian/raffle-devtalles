@@ -17,6 +17,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { IUserDiscord } from './interfaces/user-discord.interface';
+import { CreateUserDiscordDto } from './dto/create-user-discord.dto';
 
 @Injectable()
 export class AuthService {
@@ -224,6 +225,31 @@ export class AuthService {
       this.handleDbErrors(error);
     }
   }
+
+  async registerDiscord(createUserDiscordDto: CreateUserDiscordDto) {
+    const { access_token, refresh_token, discordId, ...userInfo } =
+      createUserDiscordDto;
+    const isGuildMember = await this.checkGuildMembership(access_token);
+    const { access_token: newAccessToken, refresh_token: newRefreshToken } =
+      await this.getNewTokenDiscord(refresh_token);
+
+    const user = await this.findOrCreateUser(
+      { id: discordId, ...userInfo },
+      newAccessToken,
+      newRefreshToken,
+      isGuildMember,
+    );
+
+    return {
+      ...user,
+      token: this.getJwtToken({
+        id: user.id,
+        discordId: user.discordId,
+        isGuildMember: user.isGuildMember,
+      }),
+    };
+  }
+
   async checkAuthStatus(user: User) {
     return {
       ...user,

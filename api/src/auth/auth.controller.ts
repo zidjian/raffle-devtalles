@@ -15,6 +15,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { Auth } from './decorators/auth.decorator';
 import { GetUser } from './decorators/get-user.decorator';
 import { User } from './entities/user.entity';
+import { CreateUserDiscordDto } from './dto/create-user-discord.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +30,11 @@ export class AuthController {
   @Auth()
   getCurrentUser(@GetUser() user: User) {
     return user;
+  }
+
+  @Post('/register-discord')
+  registerDiscord(@Body() createUserDiscordDto: CreateUserDiscordDto) {
+    return this.authService.registerDiscord(createUserDiscordDto);
   }
 
   @Post('/register')
