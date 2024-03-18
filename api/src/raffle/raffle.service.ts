@@ -11,7 +11,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PrizeService } from '../prize/prize.service';
 import { User } from 'src/auth/entities/user.entity';
 import { WinnerRaffleDto } from './dto/winnner-raffle.dto';
-import { STATUS_CODES } from 'http';
 
 @Injectable()
 export class RaffleService {
@@ -46,6 +45,7 @@ export class RaffleService {
 
       return {
         ...savedRaffle,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         prizes: resolvePrizes.map(({ raffle, ...prize }) => prize),
       };
     } catch (error) {

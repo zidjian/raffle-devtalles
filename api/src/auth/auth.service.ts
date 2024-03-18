@@ -254,6 +254,32 @@ export class AuthService {
     };
   }
 
+  async registerAdmin(createUserDto: CreateUserDto) {
+    try {
+      const { password, ...userData } = createUserDto;
+
+      const user = this.userRepository.create({
+        ...userData,
+        roles: ['admin'],
+        password: bcrypt.hashSync(password, 10),
+      });
+      await this.userRepository.save(user);
+      delete user.password;
+
+      return {
+        ...user,
+        token: this.getJwtToken({
+          id: user.id,
+          discordId: user.discordId,
+          isGuildMember: user.isGuildMember,
+          roles: user.roles,
+        }),
+      };
+    } catch (error) {
+      this.handleDbErrors(error);
+    }
+  }
+
   async checkAuthStatus(user: User) {
     return {
       ...user,

@@ -42,6 +42,11 @@ export class AuthController {
     return this.authService.register(createUserDto);
   }
 
+  @Post('/register-admin')
+  registerAdmin(@Body() createUserDto: CreateUserDto) {
+    return this.authService.registerAdmin(createUserDto);
+  }
+
   @Get('/check-discordGuild')
   @Auth()
   checkDiscordGuild(@GetUser('id') userId: string) {
