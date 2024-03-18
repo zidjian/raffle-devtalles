@@ -179,7 +179,9 @@ export class AuthService {
     isGuildMember: boolean,
   ) {
     const { id, username, email, avatar } = userInfo;
-    let user = await this.userRepository.findOne({ where: { discordId: id } });
+    let user = await this.userRepository.findOne({
+      where: { discordId: id, email },
+    });
 
     if (!user) {
       user = await this.userRepository.create({
