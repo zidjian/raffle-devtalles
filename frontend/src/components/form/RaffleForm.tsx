@@ -38,7 +38,6 @@ export function RaffleForm({ button, id }: Props) {
     });
 
     function onLoadFileBgOg() {
-        console.log("dsf");
         setImage(formik, setFile, "image");
     }
 

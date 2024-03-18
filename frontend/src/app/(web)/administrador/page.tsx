@@ -5,8 +5,6 @@ import { redirect } from "next/navigation";
 export default async function AdministratorPage() {
     const session: any = await auth();
 
-    console.log(session);
-
     if (!session?.user) {
         redirect("/iniciar-sesion");
     }
