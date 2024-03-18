@@ -100,7 +100,7 @@ export const initialData: SeedData = {
       roles: ['user'],
       isGuildMember: true,
       discordId: '13212',
-      username: 'Administrador de paginas',
+      username: 'SuperHtmlFase3',
     },
     {
       email: 'user2@gmail.com',
