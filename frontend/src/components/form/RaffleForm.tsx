@@ -48,8 +48,13 @@ export function RaffleForm({ button, id }: Props) {
         onSubmit: async (values) => {
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("Authorization", session.user.user.token.trim());
-            const data = { ...values, deadLine: values.date };
+            myHeaders.append(
+                "Authorization",
+                "Bearer " + session.user.user.token.trim()
+            );
+
+            const { date, ...rest } = values;
+            const data = { ...rest, deadLine: values.date };
 
             if (id === "nuevo") {
                 await fetch("http://localhost:3001/api/raffle", {
@@ -64,8 +69,8 @@ export function RaffleForm({ button, id }: Props) {
                         }
                     });
             } else {
-                await fetch("http://localhost:3001/api/raffle" + id, {
-                    method: "PUT",
+                await fetch("http://localhost:3001/api/raffle/" + id, {
+                    method: "PATCH",
                     headers: myHeaders,
                     body: JSON.stringify(data),
                 })
