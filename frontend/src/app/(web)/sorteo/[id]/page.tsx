@@ -1,8 +1,27 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
-export default function SorteoPage() {
+interface Props {
+    params: {
+        id: string;
+    };
+}
+
+export default function SorteoPage({ params }: Props) {
+    let today: string | Date = new Date();
+    today = today.toISOString().substring(0, 10);
+    const [raffle, setRaffle]: any = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:3001/api/raffle/" + params.id)
+            .then((res) => res.json())
+            .then((res) => {
+                setRaffle(res);
+            });
+    }, []);
+
     function verified() {}
 
     return (
@@ -24,20 +43,18 @@ export default function SorteoPage() {
                             </div>
                             <div className="flex flex-col justify-center items-start gap-4 md:py-24 lg:py-48">
                                 <h1 className="font-black text-5xl">
-                                    Sorteo uno
+                                    {raffle?.title}
                                 </h1>
-                                <div className="font-black text-xl">
-                                    15/03/2024
+                                <div
+                                    className={`font-black text-xl ${
+                                        raffle?.deadLine >= today
+                                            ? "text-[#46ca58]"
+                                            : "text-[#e03939]"
+                                    }`}
+                                >
+                                    {raffle?.deadLine}
                                 </div>
-                                <p>
-                                    It uses a dictionary of over 200 Latin
-                                    words, combined with a handful of model
-                                    sentence structures, to generate Lorem Ipsum
-                                    which looks reasonable. The generated Lorem
-                                    Ipsum is therefore always free from
-                                    repetition, injected humour, or
-                                    non-characteristic words etc.
-                                </p>
+                                <p>{raffle?.description}</p>
 
                                 <div
                                     onClick={() => verified()}
@@ -47,7 +64,7 @@ export default function SorteoPage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="py-12">
+                        {/* <div className="py-12">
                             <h2 className="font-black text-4xl text-center mb-12">
                                 Premios
                             </h2>
@@ -77,7 +94,7 @@ export default function SorteoPage() {
                                     <h3 className="text-center text-2xl font-black">Premio uno</h3>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

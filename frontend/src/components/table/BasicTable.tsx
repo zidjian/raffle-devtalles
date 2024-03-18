@@ -29,6 +29,14 @@ export function BasicTable() {
         },
     });
 
+    useEffect(() => {
+        fetch("http://localhost:3001/api/raffle")
+            .then((res) => res.json())
+            .then((res) => {
+                console.log(res);
+            });
+    }, []);
+
     function onDeleteItem() {
         Swal.fire({
             title: "Deseas eliminar el elemento?",
