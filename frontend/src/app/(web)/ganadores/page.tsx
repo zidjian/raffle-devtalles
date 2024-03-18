@@ -23,7 +23,7 @@ export default function GanadpresPage() {
                                 />
                             </figure>
                             <h2 className="font-bold text-xl text-center">
-                                Sorteo uno
+                                Ganador
                             </h2>
                         </div>
                     </div>

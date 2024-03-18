@@ -1,0 +1,76 @@
+.content {
+    @apply mx-auto;
+}
+
+.toolbar {
+    @apply sm:flex sm:items-center sm:justify-between;
+}
+
+.toolbarTitle {
+    @apply font-bold text-2xl text-white;
+}
+
+.tools {
+    @apply flex flex-wrap items-center gap-3;
+}
+
+.container {
+    @apply flex flex-col mt-6 overflow-hidden;
+}
+
+.containerStatic {
+    @apply overflow-x-auto sm:-mx-6 lg:-mx-8;
+}
+
+.containerFlow {
+    @apply overflow-hidden border border-white md:rounded-lg;
+}
+
+.table {
+    @apply min-w-full divide-y divide-white;
+}
+
+.theadItem {
+    @apply px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-white;
+}
+
+.tbody {
+    @appl divide-y divide-white;
+}
+
+.theadRow,
+.tbodyRow {
+    @apply divide-x divide-white;
+}
+
+.tbodyItem {
+    @apply px-4 py-4 text-sm whitespace-nowrap;
+}
+
+.actions {
+    @apply flex gap-2 cursor-pointer;
+}
+
+.actionsIcon {
+    @apply text-lg pointer-events-none;
+}
+
+.footer {
+    @apply mt-6 sm:flex sm:items-center sm:justify-between;
+}
+
+.status {
+    @apply text-sm font-black;
+}
+
+.statusPosition {
+    @apply font-medium;
+}
+
+.pagination {
+    @apply flex items-center mt-4 gap-x-4 sm:mt-0;
+}
+
+.paginationItem {
+    @apply flex items-center justify-center w-1/2 px-5 py-2 text-sm text-white capitalize transition-colors duration-200 bg-white border border-black  rounded-md sm:w-auto gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800;
+}

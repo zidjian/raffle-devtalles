@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "../formElement";
+import { useSession } from "next-auth/react";
+import { logout } from "@/actions/auth/logout";
 
 interface Navigation {
     text: string;
@@ -11,9 +14,12 @@ const navigation: Navigation[] = [
     { text: "Inicio", path: "/" },
     { text: "Sorteos", path: "/sorteos" },
     { text: "Ganadores", path: "/ganadores" },
+    { text: "Administrador", path: "/administrador" },
 ];
 
 export function Header() {
+    const { data: session } = useSession();
+
     return (
         <div className="py-4 px-2 lg:px-0 bg-[#0F0A1E]">
             <div className="w-full mx-auto md:max-w-7xl flex justify-between items-center">
@@ -38,12 +44,21 @@ export function Header() {
                         </Link>
                     ))}
                 </nav>
-                <Link
-                    className="py-2 px-8 rounded-lg bg-[#261a4b] hover:bg-[#20163d] font-bold hidden md:flex"
-                    href={"/iniciar-sesion"}
-                >
-                    Iniciar sesión
-                </Link>
+                {!session?.user ? (
+                    <Link
+                        className="py-2 px-8 rounded-lg bg-[#261a4b] hover:bg-[#20163d] font-bold hidden md:flex"
+                        href={"/iniciar-sesion"}
+                    >
+                        Iniciar sesión
+                    </Link>
+                ) : (
+                    <a
+                        className="py-2 px-8 rounded-lg bg-[#261a4b] hover:bg-[#20163d] font-bold hidden md:flex cursor-pointer"
+                        onClick={() => logout()}
+                    >
+                        Cerrar sesión
+                    </a>
+                )}
             </div>
         </div>
     );
