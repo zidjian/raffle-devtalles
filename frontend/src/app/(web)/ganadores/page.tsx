@@ -10,6 +10,7 @@ export default function GanadpresPage() {
         fetch("http://localhost:3001/api/raffle/ended-raffles")
             .then((res) => res.json())
             .then((res) => {
+                console.log(res);
                 setRaffles(res);
             });
     }, []);
@@ -40,8 +41,11 @@ export default function GanadpresPage() {
                                     />
                                 </figure>
                                 <h2 className="font-bold text-xl text-center">
-                                    {raffle.winner.username}
+                                    {"Ganador - " + raffle.winner.username}
                                 </h2>
+                                <p className="font-bold text-xl text-center">
+                                    {"Sorteo - " + raffle.title}
+                                </p>
                             </div>
                         ))}
                     </div>
