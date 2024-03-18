@@ -4,12 +4,12 @@
 
 ### Índice
 
--   [Descripción del proyecto](#Descripción-del-proyecto)
--   [Instalación](#Instalacion)
--   [Funcionalidades del proyecto](#Funcionalidades-del-proyecto)
--   [Acceso al proyecto](#Acceso-al-proyecto)
--   [Tecnologías utilizadas](#Tecnologías-utilizadas)
--   [Autores](#Autores)
+- [Descripción del proyecto](#Descripción-del-proyecto)
+- [Instalación](#Instalacion)
+- [Funcionalidades del proyecto](#Funcionalidades-del-proyecto)
+- [Acceso al proyecto](#Acceso-al-proyecto)
+- [Tecnologías utilizadas](#Tecnologías-utilizadas)
+- [Autores](#Autores)
 
 ## Descripción del proyecto
 
@@ -20,38 +20,63 @@ Descripcion
 
 1. Clonar el repositorio
 
-##### Backend
+#### Backend
 
 1. Dirigirse a la carpeta `api`
 
-    ```
-    cd api
-    ```
+   ```
+   cd api
+   ```
 
 2. Instalar dependencias.
 
-    ```
-    npm install
-    ```
+   ```
+   npm install
+   ```
 
 3. Copiar el archivo _`.env.examples`_ y renombrarlo a _`.env`_
 4. Cambiar las variables de entorno
 5. Levantar la base de datos
 
-    ```
-    docker-compose up
-    ```
+   ```
+   docker-compose up
+   ```
 
 6. Ejecutar la aplicacion
 
-    ```
-    npm run start:dev
-    ```
+   ```
+   npm run start:dev
+   ```
+
+7. Ejecutar SEED para popular base de datos ingresando a:
+   `http://localhost:3001/api/seed`
+
+8. Si todo salio correcto estas son algunas cuentas para probar la aplicación:
+
+   ###### Admin:
+
+   Usuario Administrador
+
+   ```
+       correo: admin@gmail.com
+   contraseña: Abc123
+   ```
+
+   ###### User:
+
+   Usuario que esta autenticado\*\* como alguien que tiene cuenta de discord y es miembro del servidor y no ha participado en ningún sorteo.
+
+   ```
+       correo: user@gmail.com
+   contraseña: Abc123
+   ```
+
+   > \*\*No es una autenticación utilizando los servicios del API de discord, solo es una prueba
 
 ## Funcionalidades del proyecto
 
--   `Funcionalidad 1:`
--   `Funcionalidad 1:`
+- `Funcionalidad 1:`
+- `Funcionalidad 1:`
 
 ## Acceso al proyecto
 
@@ -59,8 +84,8 @@ Descripcion
 
 ## Tecnologías utilizadas
 
--   Nextjs 14
--   Nest
+- Nextjs 14
+- Nest
 
 ## Autores
 
