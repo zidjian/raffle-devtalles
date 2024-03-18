@@ -10,6 +10,8 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { ButtonLink } from "../formElement";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const MySwal = withReactContent(Swal);
 
@@ -18,6 +20,9 @@ export function BasicTable() {
     const [state, setState]: any = useState("Sorteo");
     const [raffles, setRaffles]: any = useState([]);
     const [active, setActive]: any = useState(false);
+    const { data: session }: any = useSession();
+    const [update, setUpdate]: any = useState(false);
+    const goTo = useRouter();
 
     const toast = MySwal.mixin({
         toast: true,
@@ -35,7 +40,6 @@ export function BasicTable() {
         fetch("http://localhost:3001/api/raffle")
             .then((res) => res.json())
             .then((res) => {
-                console.log(res);
                 setRaffles(res);
             });
     }, []);
@@ -84,22 +88,35 @@ export function BasicTable() {
 
         participants = await participants.json();
         const count = participants.length;
-        console.log(count, participants);
 
         setState("Sorteando...");
         const interval = setInterval(function () {
             setWinner(participants[generateRandom(count)].username);
         }, 100);
         setTimeout(function () {
+            const winner = generateRandom(count);
             clearInterval(interval);
-            setWinner(participants[generateRandom(count)].username);
+            setWinner(participants[winner].username);
             setState("Ganador");
+
+            if (session.user) {
+                const myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                myHeaders.append(
+                    "Authorization",
+                    "Bearer " + session.user.user.token.trim()
+                );
+
+                fetch(`http://localhost:3001/api/raffle/${id}/set-winner`, {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: JSON.stringify({
+                        id: participants[winner].id,
+                    }),
+                });
+            }
         }, 3000);
     }
-
-    // useEffect(() => {
-    //     getWinner();
-    // }, []);
 
     return (
         <>
@@ -250,7 +267,10 @@ export function BasicTable() {
                             <button
                                 type={"button"}
                                 className="py-2 px-8 font-bold rounded-lg bg-[#E8D2FF] text-[#0F0A1E] hover:bg-white"
-                                onClick={() => setActive(false)}
+                                onClick={() => {
+                                    setActive(false);
+                                    goTo.push("/ganadores");
+                                }}
                             >
                                 Cerrar
                             </button>
