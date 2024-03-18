@@ -1,9 +1,18 @@
-import { auth } from "@/auth.config";
+"use client";
+
+import { logout } from "@/actions/auth/logout";
 import { BasicTable } from "@/components/table/BasicTable";
+import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
-export default async function AdministratorPage() {
-    const session: any = await auth();
+export default function AdministratorPage() {
+    const { data: session }: any = useSession();
+
+    console.log(session);
+
+    if (!session?.user?.user?.roles || !(session?.user?.user?.roles).includes("admin")) {
+        logout();
+    }
 
     if (!session?.user) {
         redirect("/iniciar-sesion");

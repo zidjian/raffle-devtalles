@@ -11,7 +11,7 @@ export default function LoginPage() {
     const goTo = useRouter();
 
     if (session?.user) {
-        goTo.replace("/administrador");
+        goTo.replace("/");
     }
     
     function SinIng() {
@@ -35,9 +35,9 @@ export default function LoginPage() {
                 {/* <p className="my-4">
                     Ingreas tus credenciales o usa alguna plataforma para acceder.
                 </p> */}
-                <LoginForm />
+                {/* <LoginForm />
 
-                <hr className="my-4 h-0.5 border-t-0 w-full bg-white" />
+                <hr className="my-4 h-0.5 border-t-0 w-full bg-white" /> */}
 
                 <button
                     onClick={() => SinIng()}
