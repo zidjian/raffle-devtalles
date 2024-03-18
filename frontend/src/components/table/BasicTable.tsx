@@ -17,6 +17,7 @@ export function BasicTable() {
     const [winner, setWinner]: any = useState("00");
     const [state, setState]: any = useState("Sorteo");
     const [raffles, setRaffles]: any = useState([]);
+    const [active, setActive]: any = useState(false);
 
     const toast = MySwal.mixin({
         toast: true,
@@ -75,21 +76,30 @@ export function BasicTable() {
         return rand;
     }
 
-    function getWinner() {
+    async function getWinner(id: string) {
+        setActive(true);
+        let participants: any = await fetch(
+            `http://localhost:3001/api/raffle/${id}/participants`
+        );
+
+        participants = await participants.json();
+        const count = participants.length;
+        console.log(count, participants);
+
         setState("Sorteando...");
         const interval = setInterval(function () {
-            setWinner(generateRandom());
+            setWinner(participants[generateRandom(count)].username);
         }, 100);
         setTimeout(function () {
             clearInterval(interval);
-            setWinner(generateRandom());
+            setWinner(participants[generateRandom(count)].username);
             setState("Ganador");
         }, 3000);
     }
 
-    useEffect(() => {
-        getWinner();
-    }, []);
+    // useEffect(() => {
+    //     getWinner();
+    // }, []);
 
     return (
         <>
@@ -198,7 +208,9 @@ export function BasicTable() {
                                                                 </div>
                                                                 <div
                                                                     onClick={() =>
-                                                                        onDeleteItem()
+                                                                        getWinner(
+                                                                            raffle.id
+                                                                        )
                                                                     }
                                                                     className={
                                                                         styles.actions
@@ -224,36 +236,28 @@ export function BasicTable() {
                         </div>
                     </div>
                 </div>
-
-                {/* <div className={styles.footer}>
-                    <div className={styles.status}>
-                        Page{" "}
-                        <span className={styles.statusPosition}>1 of 10</span>
-                    </div>
-
-                    <div className={styles.pagination}>
-                        <ButtonLink
-                            text={"Anterior"}
-                            href={"#"}
-                            icon={<FaArrowLeftLong />}
-                        />
-                        <ButtonLink
-                            text={"Siguiente"}
-                            href={"#"}
-                            icon={<FaArrowRightLong />}
-                            iconPosition="right"
-                        />
-                    </div>
-                </div> */}
             </div>
-            {/* <div className="fixed top-0 left-0 w-screen h-screen bg-[#1d1238c2] flex justify-center items-center">
-                <div className="flex p-16 bg-[#0F0A1E] rounded-xl flex-col">
-                    <div className="font-black text-7xl text-center">{winner}</div>
-                    <div className="uppercase text-2xl w-full text-center">
-                        {state}
+            {active == true && (
+                <div className="fixed top-0 left-0 w-screen h-screen bg-[#1d1238c2] flex justify-center items-center">
+                    <div className="flex p-16 bg-[#0F0A1E] rounded-xl flex-col">
+                        <div className="font-black text-7xl text-center">
+                            {winner}
+                        </div>
+                        <div className="uppercase text-2xl w-full text-center">
+                            {state}
+                        </div>
+                        <div className="mt-8 flex justify-center">
+                            <button
+                                type={"button"}
+                                className="py-2 px-8 font-bold rounded-lg bg-[#E8D2FF] text-[#0F0A1E] hover:bg-white"
+                                onClick={() => setActive(false)}
+                            >
+                                Cerrar
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div> */}
+            )}
         </>
     );
 }
