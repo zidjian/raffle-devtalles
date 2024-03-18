@@ -105,12 +105,14 @@ export default function SorteoPage({ params }: Props) {
 
                 <p>{raffle?.description}</p>
 
-                <div
-                  onClick={() => verified()}
-                  className='py-2 px-4 font-bold rounded-lg bg-[#E8D2FF] text-[#0F0A1E] hover:bg-white cursor-pointer'
-                >
-                  Participar
-                </div>
+                {raffle?.status === 'activo' ? (
+                  <div
+                    onClick={() => verified()}
+                    className='py-2 px-4 font-bold rounded-lg bg-[#E8D2FF] text-[#0F0A1E] hover:bg-white cursor-pointer'
+                  >
+                    Participar
+                  </div>
+                ) : null}
               </div>
             </div>
             {/* <div className="py-12">
