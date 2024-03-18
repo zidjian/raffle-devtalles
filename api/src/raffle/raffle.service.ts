@@ -122,7 +122,7 @@ export class RaffleService {
     return rafflesEnded;
   }
 
-  async setWinner(raffleId: string, winnerRaffle: WinnerRaffleDto) {
+  async setWinner(raffleId: string, winnerId: string) {
     const raffle = await this.raffleRepository.findOne({
       where: { id: raffleId },
       relations: ['participants'],
@@ -134,19 +134,17 @@ export class RaffleService {
     const participantIds = raffle.participants.map(
       (participant) => participant.id,
     );
-    if (!participantIds.includes(winnerRaffle.id)) {
+    if (!participantIds.includes(winnerId)) {
       throw new BadRequestException(
-        `User with id ${winnerRaffle.id} is not a participant in the raffle`,
+        `User with id ${winnerId} is not a participant in the raffle`,
       );
     }
 
     const winner = await this.userRepository.findOneBy({
-      id: winnerRaffle.id,
+      id: winnerId,
     });
     if (!winner) {
-      throw new NotFoundException(
-        `Winner with id ${winnerRaffle.id} not found`,
-      );
+      throw new NotFoundException(`Winner with id ${winnerId} not found`);
     }
 
     raffle.winner = winner;

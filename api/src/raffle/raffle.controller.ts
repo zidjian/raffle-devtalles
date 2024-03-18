@@ -31,9 +31,9 @@ export class RaffleController {
   @Auth(ValidRoles.admin)
   setWinner(
     @Param('id', ParseUUIDPipe) raffleId: string,
-    @Body() userId: WinnerRaffleDto,
+    @Body() winnerId: string,
   ) {
-    return this.raffleService.setWinner(raffleId, userId);
+    return this.raffleService.setWinner(raffleId, winnerId);
   }
 
   @Get()
