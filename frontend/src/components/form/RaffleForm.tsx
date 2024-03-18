@@ -134,7 +134,7 @@ export function RaffleForm({ button, id }: Props) {
                     helpertext={formik.touched.date && formik.errors.date}
                 />
             </div>
-            <div className="col-span-1">
+            {/* <div className="col-span-1">
                 <UploadFiles
                     text={"Subir imagen"}
                     label={"Foto de articulo"}
@@ -143,7 +143,7 @@ export function RaffleForm({ button, id }: Props) {
                     error={formik.touched.image && Boolean(formik.errors.image)}
                     helpertext={formik.touched.image && formik.errors.image}
                 />
-            </div>
+            </div> */}
             <div className="col-span-full flex justify-center">
                 <Button text={button} type="submit" />
             </div>
