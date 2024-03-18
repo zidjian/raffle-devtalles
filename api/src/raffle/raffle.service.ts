@@ -6,10 +6,12 @@ import {
 import { CreateRaffleDto } from './dto/create-raffle.dto';
 import { UpdateRaffleDto } from './dto/update-raffle.dto';
 import { Repository } from 'typeorm';
-import { Raffle } from './entities/raffle.entity';
+import { Raffle, RaffleStatus } from './entities/raffle.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PrizeService } from '../prize/prize.service';
 import { User } from 'src/auth/entities/user.entity';
+import { WinnerRaffleDto } from './dto/winnner-raffle.dto';
+import { STATUS_CODES } from 'http';
 
 @Injectable()
 export class RaffleService {
@@ -69,8 +71,12 @@ export class RaffleService {
 
     if (!raffle) {
       throw new NotFoundException(
-        `No se encontro la rifa con el id ${raffleId}`,
+        `No se encontró la rifa con el id ${raffleId}`,
       );
+    }
+
+    if (raffle.status === RaffleStatus.FINALIZADO) {
+      throw new BadRequestException('El sorteo ya finalizó');
     }
 
     if (raffle.participants.some((participant) => participant.id === userId)) {
@@ -81,7 +87,7 @@ export class RaffleService {
 
     // Verificar si el sorteo ha terminado
     if (new Date() > raffle.deadLine) {
-      throw new Error('El sorteo ha terminado.');
+      throw new BadRequestException('El sorteo ha terminado.');
     }
 
     // Agregar al usuario a la rifa
@@ -94,7 +100,7 @@ export class RaffleService {
   async findAll() {
     try {
       const raffles = await this.raffleRepository.find({
-        relations: ['prizes'],
+        relations: ['prizes', 'winner', 'participants'],
       });
 
       return raffles.map((raffle) => ({
@@ -106,12 +112,52 @@ export class RaffleService {
     }
   }
 
+  async setWinner(raffleId: string, winnerRaffle: WinnerRaffleDto) {
+    const raffle = await this.raffleRepository.findOne({
+      where: { id: raffleId },
+      relations: ['participants'],
+    });
+
+    if (!raffle)
+      throw new NotFoundException(`Raffle with id ${raffleId} not found`);
+
+    const participantIds = raffle.participants.map(
+      (participant) => participant.id,
+    );
+    if (!participantIds.includes(winnerRaffle.id)) {
+      throw new BadRequestException(
+        `User with id ${winnerRaffle.id} is not a participant in the raffle`,
+      );
+    }
+
+    const winner = await this.userRepository.findOneBy({
+      id: winnerRaffle.id,
+    });
+    if (!winner) {
+      throw new NotFoundException(
+        `Winner with id ${winnerRaffle.id} not found`,
+      );
+    }
+
+    raffle.winner = winner;
+    raffle.status = RaffleStatus.FINALIZADO;
+
+    await this.raffleRepository.save(raffle);
+
+    return raffle;
+  }
+
   async getRaffleParticipants(raffleId: string) {
     const raffle = await this.raffleRepository
       .createQueryBuilder('raffle')
       .leftJoinAndSelect('raffle.participants', 'participants')
       .where('raffle.id = :raffleId', { raffleId })
       .getMany();
+
+    if (raffle.length === 0)
+      throw new NotFoundException(
+        `No se encontró la rifa con el id "${raffleId}"`,
+      );
 
     const participants = raffle.map((raffle) => raffle.participants).flat();
 
@@ -122,6 +168,8 @@ export class RaffleService {
     const raffle = await this.raffleRepository
       .createQueryBuilder('raffle')
       .leftJoinAndSelect('raffle.prizes', 'prize')
+      .leftJoinAndSelect('raffle.participants', 'participant')
+      .leftJoinAndSelect('raffle.winner', 'winner')
       .where('raffle.id = :id', { id })
       .getOne();
 

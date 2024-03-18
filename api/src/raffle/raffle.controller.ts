@@ -15,6 +15,7 @@ import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ValidRoles } from 'src/auth/interfaces/valid-roles';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
+import { WinnerRaffleDto } from './dto/winnner-raffle.dto';
 
 @Controller('raffle')
 export class RaffleController {
@@ -23,8 +24,16 @@ export class RaffleController {
   @Post()
   @Auth(ValidRoles.admin)
   create(@Body() createRaffleDto: CreateRaffleDto, @GetUser() user: User) {
-    console.log('user Controler', user);
     return this.raffleService.create(createRaffleDto, user);
+  }
+
+  @Post('/:id/set-winner')
+  @Auth(ValidRoles.admin)
+  setWinner(
+    @Param('id', ParseUUIDPipe) raffleId: string,
+    @Body() userId: WinnerRaffleDto,
+  ) {
+    return this.raffleService.setWinner(raffleId, userId);
   }
 
   @Get()

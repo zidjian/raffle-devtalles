@@ -52,4 +52,7 @@ export class Raffle {
 
   @OneToMany(() => Prize, (prize) => prize.raffle)
   prizes: Prize[];
+
+  @ManyToOne(() => User, { nullable: true })
+  winner: User;
 }
