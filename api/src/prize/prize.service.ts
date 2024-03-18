@@ -12,7 +12,7 @@ export class PrizeService {
     @InjectRepository(Prize)
     private readonly prizeRepository: Repository<Prize>,
   ) {}
-  async create(createPrizeDto: CreatePrizeDto, raffle: Raffle) {
+  /*   async create(createPrizeDto: CreatePrizeDto, raffle: Raffle) {
     try {
       const prize = await this.prizeRepository.create({
         ...createPrizeDto,
@@ -23,7 +23,7 @@ export class PrizeService {
     } catch (error) {
       console.log('Prize Service', error);
     }
-  }
+  } */
 
   findAll() {
     return `This action returns all prize`;
@@ -39,14 +39,14 @@ export class PrizeService {
     return prize;
   }
 
-  async update(updatePrizeDto: UpdatePrizeDto, raffle: Raffle) {
+  /*   async update(updatePrizeDto: UpdatePrizeDto, raffle: Raffle) {
     const { id, ...prizeData } = updatePrizeDto;
 
     const prize = await this.findOne(id);
 
     return this.prizeRepository.save({ ...prize, ...prizeData, raffle });
   }
-
+ */
   async removeMany(prizeIdsToRemove: string[]) {
     await this.prizeRepository.delete(prizeIdsToRemove);
   }

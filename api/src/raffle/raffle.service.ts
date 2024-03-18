@@ -24,29 +24,27 @@ export class RaffleService {
 
   async create(createRaffleDto: CreateRaffleDto, user: User) {
     try {
-      const { prizes = [], ...raffleDetails } = createRaffleDto;
-
       const newRaffle = await this.raffleRepository.create({
-        ...raffleDetails,
+        ...createRaffleDto,
         creator: user,
       });
 
       console.log('user', user);
 
       const savedRaffle = await this.raffleRepository.save(newRaffle);
-
+      /* 
       const promisePrizes = prizes.map(
         async (prize) => await this.prizeService.create(prize, savedRaffle),
       );
 
       const resolvePrizes = await Promise.all(promisePrizes);
 
-      savedRaffle.prizes = resolvePrizes;
+      savedRaffle.prizes = resolvePrizes; */
 
       return {
         ...savedRaffle,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        prizes: resolvePrizes.map(({ raffle, ...prize }) => prize),
+        /*   prizes: resolvePrizes.map(({ raffle, ...prize }) => prize), */
       };
     } catch (error) {
       console.log('Raffle Service', error);
@@ -100,13 +98,15 @@ export class RaffleService {
   async findAll() {
     try {
       const raffles = await this.raffleRepository.find({
-        relations: ['prizes', 'winner', 'participants'],
+        relations: ['winner', 'participants'],
       });
 
+      return raffles;
+      /* 
       return raffles.map((raffle) => ({
         ...raffle,
         prizes: raffle.prizes.map((prize) => ({ ...prize })),
-      }));
+      })); */
     } catch (error) {
       console.log(error);
     }
@@ -177,7 +177,7 @@ export class RaffleService {
   async findOne(id: string) {
     const raffle = await this.raffleRepository
       .createQueryBuilder('raffle')
-      .leftJoinAndSelect('raffle.prizes', 'prize')
+      //.leftJoinAndSelect('raffle.prizes', 'prize')
       .leftJoinAndSelect('raffle.participants', 'participant')
       .leftJoinAndSelect('raffle.winner', 'winner')
       .where('raffle.id = :id', { id })
@@ -191,19 +191,17 @@ export class RaffleService {
   }
 
   async update(id: string, updateRaffleDto: UpdateRaffleDto, user: User) {
-    const { prizes, ...updatedRaffleData } = updateRaffleDto;
-
     const raffle = await this.findOne(id);
 
     await this.raffleRepository.save({
       ...raffle,
-      ...updatedRaffleData,
+      ...updateRaffleDto,
       creator: user,
     });
 
-    const processedPrizes = [];
+    //const processedPrizes = [];
 
-    for (const prize of prizes) {
+    /*    for (const prize of prizes) {
       if (prize.id) {
         console.log('si tiene id ', prize.id);
 
@@ -221,7 +219,7 @@ export class RaffleService {
 
     if (prizeIdsToRemove.length > 0) {
       await this.prizeService.removeMany(prizeIdsToRemove);
-    }
+    } */
 
     return await this.findOne(id);
   }

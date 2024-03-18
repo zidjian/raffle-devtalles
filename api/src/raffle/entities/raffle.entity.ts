@@ -50,8 +50,8 @@ export class Raffle {
   @ManyToOne(() => User, (user) => user.createdRaffles, { eager: true })
   creator: User;
 
-  @OneToMany(() => Prize, (prize) => prize.raffle)
-  prizes: Prize[];
+  /*   @OneToMany(() => Prize, (prize) => prize.raffle)
+  prizes: Prize[]; */
 
   @ManyToOne(() => User, { nullable: true })
   winner: User;

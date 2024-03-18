@@ -20,7 +20,7 @@ export class Prize {
   })
   photo?: string;
 
-  @ManyToOne(() => Raffle, (raffle) => raffle.prizes, { onDelete: 'CASCADE' })
+  /*   @ManyToOne(() => Raffle, (raffle) => raffle.prizes, { onDelete: 'CASCADE' })
   @JoinColumn()
-  raffle: Raffle;
+  raffle: Raffle; */
 }

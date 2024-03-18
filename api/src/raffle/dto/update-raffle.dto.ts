@@ -10,8 +10,8 @@ export class UpdateRaffleDto extends PartialType(CreateRaffleDto) {
   @IsOptional()
   status?: RaffleStatus;
 
-  @IsArray()
+  /*   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => UpdatePrizeDto)
-  prizes: UpdatePrizeDto[];
+  prizes: UpdatePrizeDto[]; */
 }

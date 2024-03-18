@@ -25,7 +25,7 @@ import { SeedModule } from './seed/seed.module';
       synchronize: true,
     }),
     RaffleModule,
-    PrizeModule,
+    //PrizeModule,
     SeedModule,
   ],
   controllers: [AppController],

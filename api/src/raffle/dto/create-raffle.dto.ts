@@ -26,8 +26,8 @@ export class CreateRaffleDto {
   @IsOptional()
   photo?: string;
 
-  @IsArray()
+  /*   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreatePrizeDto)
-  prizes: CreatePrizeDto[];
+  prizes: CreatePrizeDto[]; */
 }
