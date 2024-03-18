@@ -4,9 +4,11 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { Button, InputText } from "../formElement";
 import { UploadFiles } from "../formElement/UploadFile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { set } from "zod";
 import { setImage } from "@/utils";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface Props {
     button: string;
@@ -15,25 +17,65 @@ interface Props {
 
 export function RaffleForm({ button, id }: Props) {
     const [file, setFile]: any = useState();
+    const goTo = useRouter();
+    const { data: session }: any = useSession();
+    const [data, setData]: any = useState();
+
+    useEffect(() => {
+        fetch(`http://localhost:3001/api/raffle/${id}`)
+            .then((res) => res.json())
+            .then((res) => {
+                setData(res);
+            });
+    }, []);
 
     let schema = yup.object({
-        title: yup.string().email().required("Campo obligatorio"),
+        title: yup.string().required("Campo obligatorio"),
         description: yup.string().required("Campo obligatorio"),
         date: yup.string().required("Campo obligatorio"),
-        bgOg: yup.mixed().required("Campo obligatorio"),
+        bgOg: yup.mixed(),
     });
 
     const formik = useFormik({
         initialValues: {
-            title: "",
-            description: "",
-            date: "",
-            image: "",
+            title: data ? data.title : "",
+            description: data ? data.description : "",
+            date: data ? data.deadLine : "",
+            image: undefined,
         },
         enableReinitialize: true,
         validationSchema: schema,
         onSubmit: async (values) => {
-            console.log("guardar aqui");
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Authorization", session.user.user.token.trim());
+            const data = { ...values, deadLine: values.date };
+
+            if (id === "nuevo") {
+                await fetch("http://localhost:3001/api/raffle", {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: JSON.stringify(data),
+                })
+                    .then((res) => res.json())
+                    .then((res) => {
+                        if (res) {
+                            goTo.push("/administrador");
+                        }
+                    });
+            } else {
+                await fetch("http://localhost:3001/api/raffle" + id, {
+                    method: "PUT",
+                    headers: myHeaders,
+                    body: JSON.stringify(data),
+                })
+                    .then((res) => res.json())
+                    .then((res) => {
+                        if (res) {
+                            goTo.push("/administrador");
+                        }
+                    });
+            }
         },
     });
 
@@ -91,10 +133,10 @@ export function RaffleForm({ button, id }: Props) {
                 <UploadFiles
                     text={"Subir imagen"}
                     label={"Foto de articulo"}
-                    value={file ? file : formik.values.date}
+                    value={file ? file : formik.values.image}
                     change={onLoadFileBgOg}
-                    error={formik.touched.date && Boolean(formik.errors.date)}
-                    helpertext={formik.touched.date && formik.errors.date}
+                    error={formik.touched.image && Boolean(formik.errors.image)}
+                    helpertext={formik.touched.image && formik.errors.image}
                 />
             </div>
             <div className="col-span-full flex justify-center">

@@ -16,6 +16,7 @@ const MySwal = withReactContent(Swal);
 export function BasicTable() {
     const [winner, setWinner]: any = useState("00");
     const [state, setState]: any = useState("Sorteo");
+    const [raffles, setRaffles]: any = useState([]);
 
     const toast = MySwal.mixin({
         toast: true,
@@ -34,6 +35,7 @@ export function BasicTable() {
             .then((res) => res.json())
             .then((res) => {
                 console.log(res);
+                setRaffles(res);
             });
     }, []);
 
@@ -138,64 +140,84 @@ export function BasicTable() {
                                         </tr>
                                     </thead>
                                     <tbody className={styles.tbody}>
-                                        <tr className={styles.tbodyRow}>
-                                            <td className={styles.tbodyItem}>
-                                                Biicleta
-                                            </td>
-                                            <td className={styles.tbodyItem}>
-                                                17/03/2024
-                                            </td>
-                                            <td className={styles.tbodyItem}>
-                                                -
-                                            </td>
-                                            <td className={styles.tbodyItem}>
-                                                <div className="flex gap-4">
-                                                    <Link
-                                                        href={`/dashboard/publicacion/${"hola"}`}
-                                                        className={
-                                                            styles.actions
-                                                        }
-                                                    >
-                                                        Editar{" "}
-                                                        <FaEdit
-                                                            className={
-                                                                styles.actionsIcon
-                                                            }
-                                                        />
-                                                    </Link>
-                                                    <div
-                                                        onClick={() =>
-                                                            onDeleteItem()
-                                                        }
-                                                        className={
-                                                            styles.actions
-                                                        }
-                                                    >
-                                                        Eliminar{" "}
-                                                        <FaTrash
-                                                            className={
-                                                                styles.actionsIcon
-                                                            }
-                                                        />
+                                        {raffles.map((raffle: any) => (
+                                            <tr
+                                                key={raffle.id}
+                                                className={styles.tbodyRow}
+                                            >
+                                                <td
+                                                    className={styles.tbodyItem}
+                                                >
+                                                    {raffle.title}
+                                                </td>
+                                                <td
+                                                    className={styles.tbodyItem}
+                                                >
+                                                    {raffle.deadLine}
+                                                </td>
+                                                <td
+                                                    className={styles.tbodyItem}
+                                                >
+                                                    {raffle?.winner?.email ||
+                                                        "-"}
+                                                </td>
+                                                <td
+                                                    className={styles.tbodyItem}
+                                                >
+                                                    <div className="flex gap-4">
+                                                        {raffle.status !=
+                                                            "finalizado" && (
+                                                            <>
+                                                                <Link
+                                                                    href={`/administrador/${raffle.id}`}
+                                                                    className={
+                                                                        styles.actions
+                                                                    }
+                                                                >
+                                                                    Editar{" "}
+                                                                    <FaEdit
+                                                                        className={
+                                                                            styles.actionsIcon
+                                                                        }
+                                                                    />
+                                                                </Link>
+                                                                <div
+                                                                    onClick={() =>
+                                                                        onDeleteItem()
+                                                                    }
+                                                                    className={
+                                                                        styles.actions
+                                                                    }
+                                                                >
+                                                                    Eliminar{" "}
+                                                                    <FaTrash
+                                                                        className={
+                                                                            styles.actionsIcon
+                                                                        }
+                                                                    />
+                                                                </div>
+                                                                <div
+                                                                    onClick={() =>
+                                                                        onDeleteItem()
+                                                                    }
+                                                                    className={
+                                                                        styles.actions
+                                                                    }
+                                                                >
+                                                                    Escoger
+                                                                    ganador{" "}
+                                                                    <FaMedal
+                                                                        className={
+                                                                            styles.actionsIcon
+                                                                        }
+                                                                    />
+                                                                </div>
+                                                            </>
+                                                        )}
                                                     </div>
-                                                    <div
-                                                        onClick={() =>
-                                                            onDeleteItem()
-                                                        }
-                                                        className={
-                                                            styles.actions
-                                                        }
-                                                    >
-                                                        Escoger ganador{" "}
-                                                        <FaMedal
-                                                            className={
-                                                                styles.actionsIcon
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -203,7 +225,7 @@ export function BasicTable() {
                     </div>
                 </div>
 
-                <div className={styles.footer}>
+                {/* <div className={styles.footer}>
                     <div className={styles.status}>
                         Page{" "}
                         <span className={styles.statusPosition}>1 of 10</span>
@@ -222,7 +244,7 @@ export function BasicTable() {
                             iconPosition="right"
                         />
                     </div>
-                </div>
+                </div> */}
             </div>
             {/* <div className="fixed top-0 left-0 w-screen h-screen bg-[#1d1238c2] flex justify-center items-center">
                 <div className="flex p-16 bg-[#0F0A1E] rounded-xl flex-col">

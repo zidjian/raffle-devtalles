@@ -15,16 +15,14 @@ export const authConfig: NextAuthConfig = {
 
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
-            console.log({ user, account, profile, email, credentials });
-
             return true;
         },
 
         async jwt({ token, user, account, profile }) {
-            if (account) {
+            if (account && profile) {
                 const data = {
                     email: user.email || "",
-                    discordId: user.id || "",
+                    discordId: profile.id || "",
                     username: user.name || "",
                     access_token: account?.access_token || "",
                     refresh_token: account?.refresh_token || "",
@@ -43,8 +41,6 @@ export const authConfig: NextAuthConfig = {
                     }
                 );
                 let extendData = await extend.json();
-
-                console.log(extendData);
 
                 token.data = {
                     user: {

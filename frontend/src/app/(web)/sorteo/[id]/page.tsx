@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -13,6 +14,7 @@ export default function SorteoPage({ params }: Props) {
     let today: string | Date = new Date();
     today = today.toISOString().substring(0, 10);
     const [raffle, setRaffle]: any = useState([]);
+    const { data: session }: any = useSession();
 
     useEffect(() => {
         fetch("http://localhost:3001/api/raffle/" + params.id)
@@ -22,7 +24,22 @@ export default function SorteoPage({ params }: Props) {
             });
     }, []);
 
-    function verified() {}
+    function verified() {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", session.user.user.token.trim());
+
+        fetch("http://localhost:3001/api/raffle/participate/" + params.id, {
+            method: "POST",
+            headers: myHeaders,
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                if (res) {
+                    // goTo.push("/administrador");
+                }
+            });
+    }
 
     return (
         <>
