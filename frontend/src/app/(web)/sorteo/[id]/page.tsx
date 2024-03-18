@@ -4,6 +4,9 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
 interface Props {
     params: {
         id: string;
@@ -25,20 +28,41 @@ export default function SorteoPage({ params }: Props) {
     }, []);
 
     function verified() {
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("Authorization", session.user.user.token.trim());
+        if (session.user) {
+            const myHeaders = new Headers();
+            myHeaders.append(
+                "Authorization",
+                "Bearer " + session.user.user.token.trim()
+            );
 
-        fetch("http://localhost:3001/api/raffle/participate/" + params.id, {
-            method: "POST",
-            headers: myHeaders,
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                if (res) {
-                    // goTo.push("/administrador");
-                }
-            });
+            fetch("http://localhost:3001/api/raffle/participate/" + params.id, {
+                method: "POST",
+                headers: myHeaders,
+            })
+                .then((res) => res.json())
+                .then((res) => {
+                    if (res.statusCode == 400) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Alerta",
+                            text: res.message,
+                            timer: 30000,
+                            showCancelButton: false,
+                            showConfirmButton: true,
+                        });
+                        // goTo.push("/administrador");
+                    } else if (res.ok == true) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Gracias por participar",
+                            text: res.message,
+                            timer: 30000,
+                            showCancelButton: false,
+                            showConfirmButton: true,
+                        });
+                    }
+                });
+        }
     }
 
     return (
