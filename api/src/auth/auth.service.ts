@@ -44,6 +44,7 @@ export class AuthService {
         id: user.id,
         discordId: user.discordId,
         isGuildMember: user.isGuildMember,
+        roles: user.roles,
       });
 
       return `
@@ -164,6 +165,7 @@ export class AuthService {
       id: updatedUser.id,
       discordId: updatedUser.discordId,
       isGuildMember: updatedUser.isGuildMember,
+      roles: updatedUser.roles,
     });
 
     // Devolver el token JWT
@@ -219,6 +221,7 @@ export class AuthService {
           id: user.id,
           discordId: user.discordId,
           isGuildMember: user.isGuildMember,
+          roles: user.roles,
         }),
       };
     } catch (error) {
@@ -246,6 +249,7 @@ export class AuthService {
         id: user.id,
         discordId: user.discordId,
         isGuildMember: user.isGuildMember,
+        roles: user.roles,
       }),
     };
   }
@@ -257,6 +261,7 @@ export class AuthService {
         id: user.id,
         discordId: user.discordId,
         isGuildMember: user.isGuildMember,
+        roles: user.roles,
       }),
     };
   }
@@ -277,6 +282,7 @@ export class AuthService {
         id: true,
         discordId: true,
         isGuildMember: true,
+        roles: true,
       },
     });
 
@@ -297,6 +303,7 @@ export class AuthService {
         id: user.id,
         discordId: user.discordId,
         isGuildMember: user.isGuildMember,
+        roles: user.roles,
       }),
     };
   }
