@@ -169,7 +169,7 @@ export class AuthService {
     });
 
     // Devolver el token JWT
-    return token;
+    return { message: 'ok', token };
   }
 
   private async findOrCreateUser(
@@ -294,8 +294,6 @@ export class AuthService {
       throw new UnauthorizedException('Credentials are not valid (password)');
 
     delete user.password;
-
-    console.log(user);
 
     return {
       ...user,
