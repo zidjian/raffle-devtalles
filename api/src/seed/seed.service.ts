@@ -110,6 +110,6 @@ export class SeedService {
     const title = 'Sorteo de la Comunidad de Desarrolladores Frontend';
     const raffle = await this.raffleRepository.findOne({ where: { title } });
 
-    await this.raffleService.setWinner(raffle.id, { id: user.id });
+    await this.raffleService.setWinner(raffle.id, user.id);
   }
 }
