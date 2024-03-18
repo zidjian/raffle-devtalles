@@ -134,6 +134,13 @@ export class RaffleService {
     const participantIds = raffle.participants.map(
       (participant) => participant.id,
     );
+
+    console.log(participantIds);
+
+    console.log(winnerId);
+
+    console.log(participantIds.includes(winnerId));
+
     if (!participantIds.includes(winnerId)) {
       throw new BadRequestException(
         `User with id ${winnerId} is not a participant in the raffle`,
